@@ -1,0 +1,97 @@
+﻿@model webapptest.app.mvcapi.Models.ModuleSettingsViewModel
+
+@{
+    ViewBag.Title = "ModuleSettings";
+}
+
+<h2>Module Settings</h2>
+
+<script src="~/Scripts/jquery-3.0.0.js"></script>
+
+<script>
+
+    $(function () {
+        console.log("start");
+        $("#sendJson").click(function (e) {
+
+            var myJson = {
+                Hostname: "localhost",
+                Port: 9100,
+                Obj: {
+                    Adresse: "Weg 3",
+                    PLZ: "58675",
+                    Stadt: "rrr"
+                }
+          
+            };
+            myJson.Obj.Adresse = document.getElementById("Textbox1").value;
+            $.ajax({
+                url: "@Url.Action("ModuleSettingData", "api/SettingsAPi")",
+                dataType: "json",
+                type: "POST",
+                contentType: "application/json; charset=UTF-8",
+                processData: false,
+                
+                data: JSON.stringify(myJson), //{Hostname: "localhost", Port: 9100, Obj.Hostname: "Mein Rechner"}},
+                
+                success: function (result) {
+                    console.log(result);
+                    alert(JSON.stringify(result, null, 2));
+                },
+                error: function (result) {
+                    alert("fail " + result.status + " " + result.statusText);
+                }
+            });
+        });
+    });
+</script>
+
+<div>
+    <h4>SettingA</h4>
+    <hr />
+<!--    <dl class="dl-horizontal"> -->
+
+@using (Html.BeginForm("ModuleSettings", "Settings", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Hostname, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Hostname, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Port, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Port, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Obj.Adresse, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Obj.Adresse, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Obj.PLZ, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Obj.PLZ, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" value="Speichern" />
+        </div>
+    </div>
+}
+    <div class="col-md-10">
+        @Html.TextBox("Textbox1", "val", new { @class = "form-control" })
+    </div><div class="col-md-10">
+
+    <button id="sendJson">Json senden</button>
+</div>
+
